@@ -11,7 +11,7 @@
 
 ## External API
  - AuthO
- - TMBD
+ - OMBD
 
 ## Stretch Goals
  - Recommended movies (base on watched movies in watchlist)
