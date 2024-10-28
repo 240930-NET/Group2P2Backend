@@ -8,6 +8,8 @@
  - Movie Search
 
 ## ERD
+![image](https://github.com/user-attachments/assets/967f98e5-b996-4d25-a0f3-55fb798a8297)
+
 
 ## External API
  - AuthO
