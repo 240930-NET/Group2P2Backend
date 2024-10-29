@@ -1,6 +1,6 @@
 # Group2P2Backend
 ## Project Overview
- - A web app to search for movies, check movie ratings, add movies to a watchlist, and mark movies as watched.
+ - A web app to search for movies, check movie ratings, add movies to a watchlist, and mark movies as watched. 
 
 ## MVP Features
  - Login/Register
