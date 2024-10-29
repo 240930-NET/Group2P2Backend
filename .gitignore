@@ -1,0 +1,6 @@
+.env
+obj
+bin
+appsetting.json
+appsettings.Development.json
+TestResults
