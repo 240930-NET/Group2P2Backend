@@ -80,25 +80,6 @@ namespace MoviesP2.Data.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MoviesP2.Models.WatchedMovie", b =>
-                {
-                    b.Property<int>("WatchedMovieMovieId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WatchedMovieMovieId"));
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.HasKey("WatchedMovieMovieId");
-
-                    b.HasIndex("MovieId")
-                        .IsUnique();
-
-                    b.ToTable("WatchedMovies");
-                });
-
             modelBuilder.Entity("MoviesP2.Models.Watchlist", b =>
                 {
                     b.Property<int>("WatchlistId")
@@ -118,19 +99,19 @@ namespace MoviesP2.Data.Migrations
                     b.ToTable("Watchlists");
                 });
 
-            modelBuilder.Entity("UserWatchedMovie", b =>
+            modelBuilder.Entity("WatchedMovie", b =>
                 {
-                    b.Property<int>("UsersUserId")
+                    b.Property<int>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<int>("WatchedMoviesWatchedMovieMovieId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("UsersUserId", "WatchedMoviesWatchedMovieMovieId");
+                    b.HasKey("MovieId", "UserId");
 
-                    b.HasIndex("WatchedMoviesWatchedMovieMovieId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("UserWatchedMovie");
+                    b.ToTable("WatchedMovie");
                 });
 
             modelBuilder.Entity("MovieWatchlist", b =>
@@ -148,17 +129,6 @@ namespace MoviesP2.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MoviesP2.Models.WatchedMovie", b =>
-                {
-                    b.HasOne("MoviesP2.Models.Movie", "Movie")
-                        .WithOne("WatchedMovie")
-                        .HasForeignKey("MoviesP2.Models.WatchedMovie", "MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-                });
-
             modelBuilder.Entity("MoviesP2.Models.Watchlist", b =>
                 {
                     b.HasOne("MoviesP2.Models.User", "User")
@@ -170,24 +140,19 @@ namespace MoviesP2.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserWatchedMovie", b =>
+            modelBuilder.Entity("WatchedMovie", b =>
                 {
+                    b.HasOne("MoviesP2.Models.Movie", null)
+                        .WithMany()
+                        .HasForeignKey("MovieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MoviesP2.Models.User", null)
                         .WithMany()
-                        .HasForeignKey("UsersUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("MoviesP2.Models.WatchedMovie", null)
-                        .WithMany()
-                        .HasForeignKey("WatchedMoviesWatchedMovieMovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MoviesP2.Models.Movie", b =>
-                {
-                    b.Navigation("WatchedMovie");
                 });
 
             modelBuilder.Entity("MoviesP2.Models.User", b =>

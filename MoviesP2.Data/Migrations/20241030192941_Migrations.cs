@@ -41,21 +41,26 @@ namespace MoviesP2.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "WatchedMovies",
+                name: "WatchedMovie",
                 columns: table => new
                 {
-                    WatchedMovieMovieId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MovieId = table.Column<int>(type: "int", nullable: false)
+                    MovieId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_WatchedMovies", x => x.WatchedMovieMovieId);
+                    table.PrimaryKey("PK_WatchedMovie", x => new { x.MovieId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_WatchedMovies_Movies_MovieId",
+                        name: "FK_WatchedMovie_Movies_MovieId",
                         column: x => x.MovieId,
                         principalTable: "Movies",
                         principalColumn: "MovieId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_WatchedMovie_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -75,30 +80,6 @@ namespace MoviesP2.Data.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserWatchedMovie",
-                columns: table => new
-                {
-                    UsersUserId = table.Column<int>(type: "int", nullable: false),
-                    WatchedMoviesWatchedMovieMovieId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserWatchedMovie", x => new { x.UsersUserId, x.WatchedMoviesWatchedMovieMovieId });
-                    table.ForeignKey(
-                        name: "FK_UserWatchedMovie_Users_UsersUserId",
-                        column: x => x.UsersUserId,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserWatchedMovie_WatchedMovies_WatchedMoviesWatchedMovieMovieId",
-                        column: x => x.WatchedMoviesWatchedMovieMovieId,
-                        principalTable: "WatchedMovies",
-                        principalColumn: "WatchedMovieMovieId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -132,15 +113,9 @@ namespace MoviesP2.Data.Migrations
                 column: "WatchlistsWatchlistId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserWatchedMovie_WatchedMoviesWatchedMovieMovieId",
-                table: "UserWatchedMovie",
-                column: "WatchedMoviesWatchedMovieMovieId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WatchedMovies_MovieId",
-                table: "WatchedMovies",
-                column: "MovieId",
-                unique: true);
+                name: "IX_WatchedMovie_UserId",
+                table: "WatchedMovie",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Watchlists_UserId",
@@ -156,19 +131,16 @@ namespace MoviesP2.Data.Migrations
                 name: "MovieWatchlist");
 
             migrationBuilder.DropTable(
-                name: "UserWatchedMovie");
+                name: "WatchedMovie");
 
             migrationBuilder.DropTable(
                 name: "Watchlists");
 
             migrationBuilder.DropTable(
-                name: "WatchedMovies");
+                name: "Movies");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Movies");
         }
     }
 }
