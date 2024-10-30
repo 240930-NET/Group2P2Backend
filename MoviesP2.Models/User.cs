@@ -8,5 +8,5 @@ public class User
     public int UserId {get; set;}
     public string Username {get; set;} = null!;
     public Watchlist? Watchlist {get; set;}
-    public List<WatchedMovie> WatchedMovies {get; } = [];
+    public List<Movie> Movies {get; } = [];
 }

@@ -5,9 +5,9 @@ namespace MoviesP2.Models;
 
 public class WatchedMovie
 {
-    [Key]
-    public int WatchedMovieMovieId {get; set;}
-    public List<User> Users {get; } = [];
     public int MovieId {get; set;}
+    public int UserId {get; set;}
     public Movie Movie {get; set;} = null!;
+    public User User {get; set;} = null!;
+    
 }

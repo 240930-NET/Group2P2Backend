@@ -14,5 +14,5 @@ public class Movie
 
     public double Rating {get; set;} //8.10 on imbd
     public List<Watchlist> Watchlists {get; } = [];
-    public WatchedMovie? WatchedMovie {get; set;}
+    public List<User> Users {get; } = [];
 }
