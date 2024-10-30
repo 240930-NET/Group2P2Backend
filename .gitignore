@@ -1,6 +1,6 @@
 .env
 obj
 bin
-appsetting.json
+appsettings.json
 appsettings.Development.json
 TestResults
