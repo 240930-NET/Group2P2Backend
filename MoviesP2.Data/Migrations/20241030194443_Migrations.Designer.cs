@@ -12,7 +12,7 @@ using MoviesP2.Data;
 namespace MoviesP2.Data.Migrations
 {
     [DbContext(typeof(MoviesContext))]
-    [Migration("20241030192941_Migrations")]
+    [Migration("20241030194443_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
