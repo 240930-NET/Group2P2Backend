@@ -1,9 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MoviesP2.Models;
 
 public class Watchlist
 {
-    int WatchlistId {get; set;}
-    int UserId {get; set;}
-    User User {get; set;} = null!;
-    List<Movie> Movies {get; } = [];
+    [Key]
+    public int WatchlistId {get; set;}
+    public int UserId {get; set;}
+    public User User {get; set;} = null!;
+    public List<Movie> Movies {get; } = [];
 }
