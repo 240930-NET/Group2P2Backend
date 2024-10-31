@@ -1,17 +1,103 @@
+using System.Reflection;
+using System.Text.Json.Serialization;
+using dotenv.net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
+using Microsoft.OpenApi.Models;
+
 using MoviesP2.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
+    
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+  {
+      options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+      {
+          Title = "API Documentation",
+          Version = "v1.0",
+          Description = ""
+      });
+      options.ResolveConflictingActions(x => x.First());
+      options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+      {
+          Type = SecuritySchemeType.OAuth2,
+          BearerFormat = "JWT",
+          Flows = new OpenApiOAuthFlows
+          {
+              Implicit  = new OpenApiOAuthFlow
+              {
+                  TokenUrl = new Uri($"https://{builder.Configuration["Auth0:Domain"]}/oauth/token"),
+                  AuthorizationUrl = new Uri($"https://{builder.Configuration["Auth0:Domain"]}/authorize?audience={builder.Configuration["Auth0:Audience"]}"),
+                  Scopes = new Dictionary<string, string>
+                  {
+                      { "openid", "OpenId" },
+                  
+                  }
+              }
+          }
+      });
+      options.AddSecurityRequirement(new OpenApiSecurityRequirement
+      {
+          {
+              new OpenApiSecurityScheme
+              {
+                  Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "oauth2" }
+              },
+              new[] { "openid" }
+          }
+      });
+
+  });
+
 
 string connectionString = builder.Configuration["ConnectionString"]!; 
 //set up DbContext
 builder.Services.AddDbContext<MoviesContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("P2")));
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins(
+            builder.Configuration["Auth0:ClientOriginUrl"]!)
+            .WithHeaders([
+                HeaderNames.ContentType,
+                HeaderNames.Authorization,
+            ])
+            .AllowAnyMethod()
+            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+    });
+});
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{   
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+
+builder.Services.AddAuthentication(options => 
+{ 
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; 
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
+}).AddJwtBearer(options => 
+{ 
+    options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}"; 
+    options.Audience = builder.Configuration["Auth0:Audience"]; 
+    options.TokenValidationParameters = new TokenValidationParameters { 
+        ValidateIssuer = true, 
+        ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}", 
+        ValidateAudience = true, ValidAudience = builder.Configuration["Auth0:Audience"], 
+        ValidateLifetime = true 
+    }; 
+});
 
 var app = builder.Build();
 
@@ -19,11 +105,22 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(settings =>
+    {
+      settings.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1.0");
+      settings.OAuthClientId(builder.Configuration["Auth0:ClientId"]);
+      settings.OAuthClientSecret(builder.Configuration["Auth0:ClientSecret"]);
+      settings.OAuthUsePkce();
+    });
 }
 
-
 app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
 
