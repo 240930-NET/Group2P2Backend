@@ -19,5 +19,9 @@ public interface IUserRepo{
     public Watchlist? GetUserWatchlist(int id);
     //This will return an empty list if user has not watched any movies
     public List<Movie> GetUserWatchedMovies(int id);
-    public User? AddMovieToWatchedMovies(int id, Movie movie);
+    //Not sure if these two below should just return the whole updated User or the updated movie
+    //I put it as movie for now but subject to change
+    public Movie? AddMovieToWatchedMovies(int id, Movie movie);
+    public Movie? RemoveMovieFromWatchedMovies(int id, int movieId);
+
 }

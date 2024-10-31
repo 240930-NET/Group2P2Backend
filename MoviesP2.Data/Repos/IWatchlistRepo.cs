@@ -13,5 +13,8 @@ public interface IWatchlistRepo {
     public Watchlist? DeleteWatchlist(int id);
     //This will return an empty list if user has not watched any movies
     public List<Movie> GetWatchlistMovies(int id);
+    //Not sure if these two below should just return the whole updated Watchlist or the updated movie
+    //I put it as movie for now but subject to change
     public Movie? AddMovieToWatchlist(int id, Movie movie);
+    public Movie? RemoveMovieFromWatchlist(int id, int movieId);
 }
