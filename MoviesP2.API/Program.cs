@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MoviesP2.Data;
+using MoviesP2.Data.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ string connectionString = builder.Configuration["ConnectionString"]!;
 //set up DbContext
 builder.Services.AddDbContext<MoviesContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("P2")));
 
+builder.Services.AddScoped<IWatchlistRepo, WatchlistRepo>();
+//builder.Services.AddScoped<IMovieRepo, MovieRepo>();
 
 var app = builder.Build();
 
