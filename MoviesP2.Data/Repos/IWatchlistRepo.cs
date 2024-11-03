@@ -9,12 +9,12 @@ public interface IWatchlistRepo {
     //should not be too hard to change the logic if we end up using DTOs
     public List<Watchlist> GetAllWatchlists();
     public Watchlist? GetWatchlistById(int id);
-    public Watchlist AddWatchlist(Watchlist watchlist); //probably should be a DTO here because movies will always be emtpy
-    public Watchlist? DeleteWatchlist(int id);
+    public void AddWatchlist(Watchlist watchlist); //probably should be a DTO here because movies will always be emtpy
+    public void DeleteWatchlist(Watchlist watchlist);
     //This will return an empty list if user has not watched any movies
     public List<Movie> GetWatchlistMovies(int id);
     //Not sure if these two below should just return the whole updated Watchlist or the updated movie
     //I put it as movie for now but subject to change
-    public Movie? AddMovieToWatchlist(int id, Movie movie);
-    public Movie? RemoveMovieFromWatchlist(int id, int movieId);
+    public void AddMovieToWatchlist(int id, Movie movie);
+    public void RemoveMovieFromWatchlist(int id, Movie movie);
 }
