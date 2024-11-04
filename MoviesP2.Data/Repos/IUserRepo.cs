@@ -9,8 +9,8 @@ public interface IUserRepo{
     //should not be too hard to change the logic if we end up using DTOs
     public List<User> GetAllUsers();
     public User? GetUserById(int id);
-    public User AddUser(User user);
-    public User? DeleteUser(int id);
+    public void AddUser(User user);
+    public void DeleteUser(User user);
     //I haven't completely gone over AuthO yet, still working through it so this may be needed
     //to enforce no duplicate usernames
     //Returns true if the username is not taken, false if it is
@@ -21,7 +21,7 @@ public interface IUserRepo{
     public List<Movie> GetUserWatchedMovies(int id);
     //Not sure if these two below should just return the whole updated User or the updated movie
     //I put it as movie for now but subject to change
-    public Movie? AddMovieToWatchedMovies(int id, Movie movie);
-    public Movie? RemoveMovieFromWatchedMovies(int id, int movieId);
+    public void AddMovieToWatchedMovies(int id, Movie movie);
+    public void RemoveMovieFromWatchedMovies(int id, Movie movie);
 
 }

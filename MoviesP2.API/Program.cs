@@ -6,6 +6,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 
 using MoviesP2.Data;
+using MoviesP2.Data.Repos;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,6 +59,7 @@ string connectionString = builder.Configuration["ConnectionString"]!;
 //set up DbContext
 builder.Services.AddDbContext<MoviesContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("P2")));
 
+<<<<<<< HEAD
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
@@ -94,6 +96,10 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true 
     }; 
 });
+=======
+builder.Services.AddScoped<IWatchlistRepo, WatchlistRepo>();
+//builder.Services.AddScoped<IMovieRepo, MovieRepo>();
+>>>>>>> development
 
 var app = builder.Build();
 
