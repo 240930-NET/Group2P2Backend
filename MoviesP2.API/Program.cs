@@ -1,8 +1,5 @@
-using System.Reflection;
 using System.Text.Json.Serialization;
-using dotenv.net;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -38,8 +35,7 @@ builder.Services.AddSwaggerGen(options =>
                   AuthorizationUrl = new Uri($"https://{builder.Configuration["Auth0:Domain"]}/authorize?audience={builder.Configuration["Auth0:Audience"]}"),
                   Scopes = new Dictionary<string, string>
                   {
-                      { "openid", "OpenId" },
-                  
+                      { "openid", "OpenId" },       
                   }
               }
           }
@@ -67,7 +63,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy.WithOrigins(
-            builder.Configuration["Auth0:ClientOriginUrl"]!)
+            builder.Configuration["Auth0:ClientOriginUrl"]!, "http://localhost:3000")
             .WithHeaders([
                 HeaderNames.ContentType,
                 HeaderNames.Authorization,
@@ -123,4 +119,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

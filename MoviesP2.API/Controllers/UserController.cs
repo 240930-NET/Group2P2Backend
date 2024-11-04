@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-//using SampleMvcApp.ViewModels;
 using System.Linq;
 using System.Security.Claims;
 using Auth0.AspNetCore.Authentication;
@@ -20,6 +19,14 @@ public class UserController : Controller
 
     public UserController(IUserService userService){
         _userService = userService;
+    }
+
+
+    private readonly IMoviesRepo _movieRepo; // dependency injection 
+    private readonly IUserRepo _userRepo;
+
+    public UserController(IMoviesRepo movieRepo, IUserRepo _userRepo){
+        _movieRepo = movieRepo;
     }
     */
 
