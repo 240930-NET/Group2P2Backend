@@ -9,6 +9,7 @@ public interface IWatchlistRepo {
     //should not be too hard to change the logic if we end up using DTOs
     public List<Watchlist> GetAllWatchlists();
     public Watchlist? GetWatchlistById(int id);
+    public Watchlist? GetWatchlistByUserAuthId(string authId);
     public void AddWatchlist(Watchlist watchlist); //probably should be a DTO here because movies will always be emtpy
     public void DeleteWatchlist(Watchlist watchlist);
     //This will return an empty list if user has not watched any movies

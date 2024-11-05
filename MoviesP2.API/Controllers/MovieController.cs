@@ -1,73 +1,32 @@
-using MoviesP2.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
-namespace MoviesP2.API;
+using MoviesP2.Models;
+using MoviesP2.API.Services;
+
+namespace MoviesP2.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[EnableCors("TestingOnly")]
+[Route("api/MovieController")]
 public class MovieController : Controller{
-    /*
-    private readonly IMovieService _roomService;
+    
+    private readonly IMovieService _movieService;
 
-    public RoomController(IRoomService roomService){
-        _roomService = roomService;
+    public MovieController(IMovieService movieService){
+        _movieService = movieService;
     }
 
-    [HttpGet]
-    public IActionResult GetRooms(){
+    [HttpGet] 
+    [Authorize]
+    public IActionResult GetAllMovies(){
         try{
-            return Ok(_roomService.GetAllRooms());
+            List<Movie> movies = _movieService.GetAllMovies();
+            return Ok(movies);
         }
         catch(Exception ex){
-            return StatusCode(500, ex.Message);
+            return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
-
-    [HttpGet("getRoomByName/{name}")]
-    public IActionResult GetRoomByName(string name)
-    {
-        try{
-            Room ?searchedRoom = _roomService.GetRoomByName(name);
-            return Ok(searchedRoom);
-        }
-        catch(Exception e){
-            return StatusCode(500, e.Message);
-        }
-    }
-
-    [HttpPost("addNewRoom")]
-    public IActionResult AddNewRoom([FromBody]Room room){
-        try{
-            _roomService.AddRoom(room);
-            return Ok(room);
-        }
-        catch(Exception){
-            return BadRequest("Could not add room");
-        }
-    }
-
-    [HttpPut("editRoom")]
-    public IActionResult EditRoom([FromBody] Room room){
-        try{
-            _roomService.EditRoom(room);
-            return Ok(room);
-        }
-        catch (Exception)
-        {
-            return BadRequest("Could not edit room");
-        }
-    }
-
-    [HttpDelete("deleteRoom/{name}")]
-    public IActionResult DeleteRoom(string name){
-        try{
-            _roomService.DeleteRoom(name);
-            return Ok("Room deleted");
-        }
-        catch(Exception){
-            return BadRequest("Could not delete room");
-        }
-    }
-    */
 }

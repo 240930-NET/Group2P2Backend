@@ -1,11 +1,11 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System.Linq;
 using System.Security.Claims;
-using Auth0.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Cors;
+
+using MoviesP2.API.Services;
+using MoviesP2.Models;
+
 
 namespace MoviesP2.API.Controllers;
 
@@ -13,7 +13,6 @@ namespace MoviesP2.API.Controllers;
 [Route("api/UserController")]
 public class UserController : Controller
 {
-    /* BUNCH OF THINGS COMMENTED OUT TO TEST Auth0 
     
     private readonly IUserService _userService; // dependency injection 
 
@@ -21,21 +20,99 @@ public class UserController : Controller
         _userService = userService;
     }
 
-
-    private readonly IMoviesRepo _movieRepo; // dependency injection 
-    private readonly IUserRepo _userRepo;
-
-    public UserController(IMoviesRepo movieRepo, IUserRepo _userRepo){
-        _movieRepo = movieRepo;
-    }
-    */
-
+    //Used for testing to be removed in prod
     [HttpGet] 
+    [EnableCors("TestingOnly")]
     [Authorize]
-    public IActionResult GetAllUsers(){
+    public async Task<IActionResult> GetAllUsers(){
         try{
-            return Ok("It worked");
-           //return Ok(_userService.GetAllCustomers()); // return status ok and our List of Customers
+            List<User> users = await _userService.GetAllUsers();
+            return Ok(users);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpGet("userInfo")]
+    [Authorize]
+    public async Task<IActionResult> GetUserByAuthId() {
+        try {
+            User user = await _userService.GetUserByAuthId(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpGet("userWatchlist")]
+    [Authorize]
+    public async Task<IActionResult> GetUserWatchlist() {
+        try {
+            Watchlist watchlist = await _userService.GetUserWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(watchlist);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpGet("userWatchedMovies")]
+    [Authorize]
+    public async Task<IActionResult> GetUserWatchedMovies() {
+        try {
+            List<Movie> watchedMovies = await _userService.GetUserWatchedMovies(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(watchedMovies);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpPost("addUser")]
+    [Authorize]
+    public async Task<IActionResult> AddUser() {
+        try {
+            User user = await _userService.AddUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpDelete("deleteUser")]
+    [EnableCors("TestingOnly")]
+    [Authorize]
+    public async Task<IActionResult> DeleteUser() {
+        try {
+            User user = await _userService.DeleteUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpPatch("UserAddWatchedMovie")]
+    [Authorize]
+    public async Task<IActionResult> AddWatchedMovie([FromBody] Movie movie) {
+        try {
+            User user = await _userService.AddWatchedMovie(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpPatch("UserRemoveWatchedMovie")]
+    [Authorize]
+    public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
+        try {
+            User user = await _userService.RemoveWatchedMovie(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(user);
         }
         catch(Exception ex){
             return StatusCode(500, ex.Message); // return server error with the error message

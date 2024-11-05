@@ -7,21 +7,24 @@ public interface IUserRepo{
     //Check IMovieRepo for general return type reasoning, got too lazy to retype comments
     //Some input variables may need to be changed to DTOs but I haven't looked into it yet
     //should not be too hard to change the logic if we end up using DTOs
-    public List<User> GetAllUsers();
-    public User? GetUserById(int id);
-    public void AddUser(User user);
-    public void DeleteUser(User user);
+    public Task<List<User>> GetAllUsers();
+    public Task<User?> GetUserById(int id);
+    public Task<User?> GetUserByAuthId(string authId);
+    public Task<User> AddUser(User user);
+    public Task DeleteUser(User user);
     //I haven't completely gone over AuthO yet, still working through it so this may be needed
     //to enforce no duplicate usernames
     //Returns true if the username is not taken, false if it is
-    public bool CheckNameNotTaken(User user);
+    public Task<bool> CheckAuthIdNotTaken(User user);
     //Returns the user watchlist
-    public Watchlist? GetUserWatchlist(int id);
+    public Task<Watchlist?> GetUserWatchlist(string authId);
     //This will return an empty list if user has not watched any movies
-    public List<Movie> GetUserWatchedMovies(int id);
+    public Task<List<Movie>> GetUserWatchedMovies(string authId);
     //Not sure if these two below should just return the whole updated User or the updated movie
     //I put it as movie for now but subject to change
-    public void AddMovieToWatchedMovies(int id, Movie movie);
-    public void RemoveMovieFromWatchedMovies(int id, Movie movie);
+    public Task<User> AddMovieToWatchedMovies(int id, Movie movie);
+    public Task<User> RemoveMovieFromWatchedMovies(int id, Movie movie);
+    public Task<User> AddMovieToWatchlist(int id, Movie movie);
+    public Task<User> RemoveMovieFromWatchlist(int id, Movie movie);
 
 }
