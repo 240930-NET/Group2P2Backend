@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -102,6 +103,16 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
+    options.AddPolicy("TestingOnly2", policy =>
+    {
+        policy.WithOrigins("*")
+            .WithHeaders([
+                HeaderNames.ContentType,
+                HeaderNames.Authorization,
+            ])
+            .AllowAnyMethod()
+            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+    });
 });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -148,6 +159,13 @@ app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
+app.MapGet("/", () => {
+    return("hahahaha");
+});
+
 app.MapControllers();
+
+
 
 app.Run();
