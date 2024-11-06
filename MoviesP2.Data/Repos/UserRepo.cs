@@ -79,9 +79,9 @@ public class UserRepo : IUserRepo{
     }
     //Not sure if these two below should just return the whole updated User or the updated movie
     //I put it as movie for now but subject to change
-    public async Task<User> AddMovieToWatchedMovies(int id, Movie movie)
+    public async Task<User> AddMovieToWatchedMovies(string authId, Movie movie)
     {
-        User ?found = await GetUserById(id);
+        User? found = await GetUserByAuthId(authId);
         if (found != null)
         {   
             Movie? foundMovie = await _context.Movies
@@ -102,9 +102,9 @@ public class UserRepo : IUserRepo{
             throw new NullReferenceException();
         } 
     }
-    public async Task<User> RemoveMovieFromWatchedMovies(int id, Movie movie)
+    public async Task<User> RemoveMovieFromWatchedMovies(string authId, Movie movie)
     {
-        User ?found = await GetUserById(id);
+        User? found = await GetUserByAuthId(authId);;
         if (found != null)
         {
             found.Movies.Remove(movie);
@@ -116,9 +116,9 @@ public class UserRepo : IUserRepo{
         } 
     }
 
-    public async Task<User> AddMovieToWatchlist(int id, Movie movie)
+    public async Task<User> AddMovieToWatchlist(string authId, Movie movie)
     {
-        User ?found = await GetUserById(id);
+        User? found = await GetUserByAuthId(authId);
         if (found != null)
         {   
             if (found.Watchlist == null) throw new Exception("User watchlist is null");
@@ -140,15 +140,53 @@ public class UserRepo : IUserRepo{
             throw new NullReferenceException();
         } 
     }
-    public async Task<User> RemoveMovieFromWatchlist(int id, Movie movie)
+    public async Task<User> RemoveMovieFromWatchlist(string authId, Movie movie)
     {
-        User ?found = await GetUserById(id);
+        User? found = await GetUserByAuthId(authId);
         if (found != null)
         {
             if (found.Watchlist == null) throw new Exception("User watchlist is null");
             found.Watchlist.Movies.Remove(movie);
             await _context.SaveChangesAsync();
             return found;
+        }
+        else{
+            throw new NullReferenceException();
+        } 
+    }
+
+    public async Task<bool> CheckMovieInWatchedMovies(string authId, Movie movie)
+    {
+        User? found = await GetUserByAuthId(authId);
+        if (found != null)
+        {
+            if (found.Movies == null) throw new Exception("User watched Movies is null");
+            Movie? foundMovie = await _context.Movies
+                .SingleOrDefaultAsync(m => m.Title == movie.Title 
+                                        && m.ReleaseYear == movie.ReleaseYear);
+            if (foundMovie == null) { //if a movie is not found its by default not in watchedMovie
+                return false;
+            }
+            return found.Movies.Contains(foundMovie);
+        }
+        else{
+            throw new NullReferenceException();
+        } 
+    }
+
+    public async Task<bool> CheckMovieInWatchlist(string authId, Movie movie)
+    {
+        User? found = await GetUserByAuthId(authId);
+        if (found != null)
+        {
+            if (found.Watchlist == null) throw new Exception("User watchlist is null");
+            Movie? foundMovie = await _context.Movies
+                .SingleOrDefaultAsync(m => m.Title == movie.Title 
+                                        && m.ReleaseYear == movie.ReleaseYear);
+            if (foundMovie == null) { //if a movie is not found its by default not in watchedMovie
+                return false;
+            }
+            return found.Watchlist.Movies.Contains(foundMovie);
         }
         else{
             throw new NullReferenceException();

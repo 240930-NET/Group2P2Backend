@@ -22,9 +22,11 @@ public interface IUserRepo{
     public Task<List<Movie>> GetUserWatchedMovies(string authId);
     //Not sure if these two below should just return the whole updated User or the updated movie
     //I put it as movie for now but subject to change
-    public Task<User> AddMovieToWatchedMovies(int id, Movie movie);
-    public Task<User> RemoveMovieFromWatchedMovies(int id, Movie movie);
-    public Task<User> AddMovieToWatchlist(int id, Movie movie);
-    public Task<User> RemoveMovieFromWatchlist(int id, Movie movie);
+    public Task<User> AddMovieToWatchedMovies(string authId, Movie movie);
+    public Task<User> RemoveMovieFromWatchedMovies(string authId, Movie movie);
+    public Task<User> AddMovieToWatchlist(string authId, Movie movie);
+    public Task<User> RemoveMovieFromWatchlist(string authId, Movie movie);
+    public Task<bool> CheckMovieInWatchedMovies(string authId, Movie movie);
+    public Task<bool> CheckMovieInWatchlist(string authId, Movie movie);
 
 }

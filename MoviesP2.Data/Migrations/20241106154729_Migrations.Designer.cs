@@ -11,7 +11,7 @@ using MoviesP2.Data;
 namespace MoviesP2.Data.Migrations
 {
     [DbContext(typeof(MoviesContext))]
-    [Migration("20241104214925_Migrations")]
+    [Migration("20241106154729_Migrations")]
     partial class Migrations
     {
         /// <inheritdoc />
@@ -47,11 +47,8 @@ namespace MoviesP2.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MovieId"));
 
-                    b.Property<string>("Rated")
+                    b.Property<string>("PosterLink")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Rating")
-                        .HasColumnType("float");
 
                     b.Property<int>("ReleaseYear")
                         .HasColumnType("int");
