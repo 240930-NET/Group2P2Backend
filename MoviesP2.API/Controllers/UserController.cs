@@ -19,6 +19,7 @@ public class UserController : Controller
         _userService = userService;
     }
 
+
     //Used for testing to be removed in prod
     [HttpGet] 
     [EnableCors("TestingOnly")]

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -64,9 +65,11 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 
+
+
 builder.Services.AddCors(options =>
 {
-    if(builder.Environment.IsDevelopment()) {
+    /*if(builder.Environment.IsDevelopment()) {
         options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
@@ -79,7 +82,7 @@ builder.Services.AddCors(options =>
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
     }
-    else {
+    else {*/
          options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
@@ -91,10 +94,20 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
-    }
+    //}
     options.AddPolicy("TestingOnly", policy =>
     {
-        policy.WithOrigins(builder.Configuration["Auth0:ClientOriginUrl"]!)
+        policy.WithOrigins(builder.Configuration["Auth0:SwaggerOriginURL"]!)
+            .WithHeaders([
+                HeaderNames.ContentType,
+                HeaderNames.Authorization,
+            ])
+            .AllowAnyMethod()
+            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+    });
+    options.AddPolicy("TestingOnly", policy =>
+    {
+        policy.WithOrigins("*")
             .WithHeaders([
                 HeaderNames.ContentType,
                 HeaderNames.Authorization,
@@ -148,5 +161,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => {
+    return builder.Configuration["Auth0:ClientOriginUrl"];
+});
 
 app.Run();
