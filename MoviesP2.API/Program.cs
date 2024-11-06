@@ -125,6 +125,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true 
     }; 
 });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
