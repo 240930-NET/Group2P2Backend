@@ -70,7 +70,7 @@ builder.Services.AddCors(options =>
         options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
-                builder.Configuration["Auth0:ClientOriginUrl"]!, builder.Configuration["Auth0:SwaggerOriginUrl"]!)
+                "http://localhost:3000", builder.Configuration["Auth0:SwaggerOriginUrl"]!)
                 .WithHeaders([
                     HeaderNames.ContentType,
                     HeaderNames.Authorization,
