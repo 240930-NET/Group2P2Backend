@@ -22,7 +22,7 @@ public class UserController : Controller
     [HttpGet("test")]
     [EnableCors("TestingOnly2")]
     public IActionResult Testing() {
-        return Ok(Environment.GetEnvironmentVariable("Auth0:ClientOriginUrl"));
+        return Ok("It worked");
     }
     //Used for testing to be removed in prod
     [HttpGet] 

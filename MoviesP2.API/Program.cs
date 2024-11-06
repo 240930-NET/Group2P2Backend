@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -31,8 +30,8 @@ builder.Services.AddSwaggerGen(options =>
             {
                 Implicit  = new OpenApiOAuthFlow
                 {
-                    TokenUrl = new Uri($"https://{Environment.GetEnvironmentVariable("Auth0:Domain")}/oauth/token"),
-                    AuthorizationUrl = new Uri($"https://{Environment.GetEnvironmentVariable("Auth0:Domain")}/authorize?audience={builder.Configuration["Auth0:Audience"]}"),
+                    TokenUrl = new Uri($"https://{builder.Configuration["Auth0:Domain"]}/oauth/token"),
+                    AuthorizationUrl = new Uri($"https://{builder.Configuration["Auth0:Domain"]}/authorize?audience={builder.Configuration["Auth0:Audience"]}"),
                     Scopes = new Dictionary<string, string>
                     {
                         { "openid", "OpenId" },       
@@ -53,7 +52,7 @@ builder.Services.AddSwaggerGen(options =>
 
     });
 
-//string connectionString = builder.Configuration["ConnectionStrings"]!; 
+//string connectionString = builder.Configuration["ConnectionString"]!; 
 //set up DbContext
 builder.Services.AddDbContext<MoviesContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("P2")));
 //Repos
@@ -65,7 +64,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 
-
+Console.WriteLine(builder.Configuration["Auth0:ClientOriginUrl"]!);
 
 builder.Services.AddCors(options =>
 {
@@ -86,7 +85,7 @@ builder.Services.AddCors(options =>
          options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
-                Environment.GetEnvironmentVariable("Auth0:ClientOriginUrl")!)
+                builder.Configuration["Auth0:ClientOriginUrl"]!)
                 .WithHeaders([
                     HeaderNames.ContentType,
                     HeaderNames.Authorization,
@@ -129,11 +128,11 @@ builder.Services.AddAuthentication(options =>
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; 
 }).AddJwtBearer(options => 
 { 
-    options.Authority = $"https://{Environment.GetEnvironmentVariable("Auth0:Domain")}"; 
+    options.Authority = $"https://{builder.Configuration["Auth0:Domain"]}"; 
     options.Audience = builder.Configuration["Auth0:Audience"]; 
     options.TokenValidationParameters = new TokenValidationParameters { 
         ValidateIssuer = true, 
-        ValidIssuer = $"https://{Environment.GetEnvironmentVariable("Auth0:Domain")}", 
+        ValidIssuer = $"https://{builder.Configuration["Auth0:Domain"]}", 
         ValidateAudience = true, ValidAudience = builder.Configuration["Auth0:Audience"], 
         ValidateLifetime = true 
     }; 
@@ -162,5 +161,8 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => {
+    
+});
 
 app.Run();
