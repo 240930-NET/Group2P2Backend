@@ -16,5 +16,9 @@ public interface IUserService {
     //Currently returns a user may need to change I just wasn't sure
     public Task<User> AddWatchedMovie(string? authId, Movie movie);
     public Task<User> RemoveWatchedMovie(string? authId, Movie movie);
+    public Task<User> AddMovieToWatchlist(string? authId, Movie movie);
+    public Task<User> RemoveMovieFromWatchlist(string? authId, Movie movie);
+    public Task<bool> CheckMovieInWatchedMovies(string? authId, Movie movie);
+    public Task<bool> CheckMovieInWatchlist(string? authId, Movie movie);
 
 }

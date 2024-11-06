@@ -59,23 +59,30 @@ public class UserService : IUserService {
     //There is a different logic that needs to be used to check if the movie exists
     public async Task<User> AddWatchedMovie(string? authId, Movie movie) {
         if (authId == null) throw new Exception("No user info provided");
-        User user = await _userRepo.GetUserByAuthId(authId) ?? throw new Exception("User doesn't exist");
-        return await _userRepo.AddMovieToWatchedMovies(user.UserId, movie);
+        return await _userRepo.AddMovieToWatchedMovies(authId, movie);
     }    
     public async Task<User> RemoveWatchedMovie(string? authId, Movie movie) {
         if (authId == null) throw new Exception("No user info provided");
-        User user = await _userRepo.GetUserByAuthId(authId) ?? throw new Exception("User doesn't exist"); 
-        return await _userRepo.RemoveMovieFromWatchedMovies(user.UserId, movie);
+        return await _userRepo.RemoveMovieFromWatchedMovies(authId, movie);
     }
 
     public async Task<User> AddMovieToWatchlist(string? authId, Movie movie) {
         if (authId == null) throw new Exception("No user info provided");
-        User user = await _userRepo.GetUserByAuthId(authId) ?? throw new Exception("User doesn't exist");
-        return await _userRepo.AddMovieToWatchlist(user.UserId, movie);
+        return await _userRepo.AddMovieToWatchlist(authId, movie);
     }    
     public async Task<User> RemoveMovieFromWatchlist(string? authId, Movie movie) {
         if (authId == null) throw new Exception("No user info provided");
-        User user = await _userRepo.GetUserByAuthId(authId) ?? throw new Exception("User doesn't exist"); 
-        return await _userRepo.RemoveMovieFromWatchlist(user.UserId, movie);
+        return await _userRepo.RemoveMovieFromWatchlist(authId, movie);
+    }
+
+    public async Task<bool> CheckMovieInWatchedMovies(string? authId, Movie movie) {
+        if (authId == null) throw new Exception("No user info provided");
+        bool result = await _userRepo.CheckMovieInWatchedMovies(authId, movie);
+        return result;
+    }
+    public async Task<bool> CheckMovieInWatchlist(string? authId, Movie movie) {
+        if (authId == null) throw new Exception("No user info provided");
+        bool result = await _userRepo.CheckMovieInWatchlist(authId, movie);
+        return result;
     }
 }

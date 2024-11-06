@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Cors;
 using MoviesP2.API.Services;
 using MoviesP2.Models;
 
-
 namespace MoviesP2.API.Controllers;
 
 [ApiController] // this Data Annonation is marking our class as a controller
@@ -71,7 +70,7 @@ public class UserController : Controller
     }
 
     [HttpPost("addUser")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> AddUser() {
         try {
             User user = await _userService.AddUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
@@ -95,7 +94,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("UserAddWatchedMovie")]
+    [HttpPatch("userAddWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> AddWatchedMovie([FromBody] Movie movie) {
         try {
@@ -107,11 +106,59 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("UserRemoveWatchedMovie")]
+    [HttpPatch("userRemoveWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
         try {
             User user = await _userService.RemoveWatchedMovie(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpPatch("userAddMovieToWatchlist")]
+    [Authorize]
+    public async Task<IActionResult> AddMovieToWatchlist([FromBody] Movie movie) {
+        try {
+            User user = await _userService.AddMovieToWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpPatch("userRemoveWatchlistMovie")]
+    [Authorize]
+    public async Task<IActionResult> RemoveMovieFromWatchlist([FromBody] Movie movie) {
+        try {
+            User user = await _userService.RemoveMovieFromWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(user);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpGet("checkMovieInWatchedMovie")]
+    [Authorize]
+    public async Task<IActionResult> CheckMovieInWatchedMovie([FromBody] Movie movie) {
+        try {
+            bool result = await _userService.CheckMovieInWatchedMovies(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(result);
+        }
+        catch(Exception ex){
+            return StatusCode(500, ex.Message); // return server error with the error message
+        }
+    }
+
+    [HttpGet("checkMovieInWatchlist")]
+    [Authorize]
+    public async Task<IActionResult> CheckMovieInWatchlist([FromBody] Movie movie) {
+        try {
+            User user = await _userService.RemoveMovieFromWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
             return Ok(user);
         }
         catch(Exception ex){
