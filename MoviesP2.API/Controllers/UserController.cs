@@ -9,7 +9,7 @@ using MoviesP2.Models;
 namespace MoviesP2.API.Controllers;
 
 [ApiController] // this Data Annonation is marking our class as a controller
-[Route("api/UserController")]
+[Route("api/[Controller]")]
 public class UserController : Controller
 {
     
@@ -106,7 +106,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("userRemoveWatchedMovie")]
+    [HttpDelete("userRemoveWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
         try {
@@ -130,7 +130,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("userRemoveWatchlistMovie")]
+    [HttpDelete("userRemoveWatchlistMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveMovieFromWatchlist([FromBody] Movie movie) {
         try {
@@ -141,8 +141,8 @@ public class UserController : Controller
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
-
-    [HttpGet("checkMovieInWatchedMovie")]
+    
+    [HttpPost("checkMovieInWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchedMovie([FromBody] Movie movie) {
         try {
@@ -153,7 +153,7 @@ public class UserController : Controller
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
-
+    
     [HttpGet("checkMovieInWatchlist")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchlist([FromBody] Movie movie) {
