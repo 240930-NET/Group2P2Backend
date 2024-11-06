@@ -161,8 +161,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => {
-    
-});
-
 app.Run();
