@@ -20,13 +20,13 @@ public class UserController : Controller
     }
 
     [HttpGet("test")]
-    [EnableCors("TestingOnly2")]
+    //[EnableCors("TestingOnly2")]
     public IActionResult Testing() {
         return Ok("It worked");
     }
     //Used for testing to be removed in prod
     [HttpGet] 
-    [EnableCors("TestingOnly")]
+    //[EnableCors("TestingOnly")]
     [Authorize]
     public async Task<IActionResult> GetAllUsers(){
         try{

@@ -52,7 +52,7 @@ builder.Services.AddSwaggerGen(options =>
 
     });
 
-//string connectionString = builder.Configuration["ConnectionString"]!; 
+string connectionString = builder.Configuration["ConnectionString"]!; 
 //set up DbContext
 builder.Services.AddDbContext<MoviesContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("P2")));
 //Repos
@@ -63,9 +63,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
-
-Console.WriteLine(builder.Configuration["Auth0:ClientOriginUrl"]!);
-
+/*
 builder.Services.AddCors(options =>
 {
     /*if(builder.Environment.IsDevelopment()) {
@@ -81,7 +79,7 @@ builder.Services.AddCors(options =>
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
     }
-    else {*/
+    else {
          options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
@@ -114,7 +112,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
-});
+});*/
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {   
@@ -155,7 +153,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseCors();
+//app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
