@@ -71,7 +71,7 @@ public class UserController : Controller
     }
 
     [HttpPost("addUser")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> AddUser() {
         try {
             User user = await _userService.AddUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
