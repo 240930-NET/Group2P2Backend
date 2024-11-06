@@ -24,7 +24,7 @@ public class MovieRepo : IMovieRepo {
     //Same as above
     public Movie? GetMovieByTitle(string title)
     {
-        return _context.Movies.Find(title);
+        return _context.Movies.FirstOrDefault(m => Equals(m.Title, title));
     }
     //We may need some other functions to look for movies with different columns but do those as we go
 
@@ -42,7 +42,7 @@ public class MovieRepo : IMovieRepo {
         _context.SaveChanges();
     }
     //Return Movie deleted or null if nothing deleted/Could return a boolean instead not sure
-    public void DeleteCustomer(Movie movie)
+    public void DeleteMovie(Movie movie)
     {
         _context.Movies.Remove(movie);
         _context.SaveChanges();
