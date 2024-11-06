@@ -66,17 +66,32 @@ builder.Services.AddScoped<IMovieService, MovieService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.WithOrigins(
-            builder.Configuration["Auth0:ClientOriginUrl"]!, "http://localhost:3000")
-            .WithHeaders([
-                HeaderNames.ContentType,
-                HeaderNames.Authorization,
-            ])
-            .AllowAnyMethod()
-            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
-    });
+    if(builder.Environment.IsDevelopment()) {
+        options.AddDefaultPolicy(policy =>
+        {
+            policy.WithOrigins(
+                builder.Configuration["Auth0:ClientOriginUrl"]!, builder.Configuration["Auth0:SwaggerOriginUrl"]!)
+                .WithHeaders([
+                    HeaderNames.ContentType,
+                    HeaderNames.Authorization,
+                ])
+                .AllowAnyMethod()
+                .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+        });
+    }
+    else {
+         options.AddDefaultPolicy(policy =>
+        {
+            policy.WithOrigins(
+                builder.Configuration["Auth0:ClientOriginUrl"]!)
+                .WithHeaders([
+                    HeaderNames.ContentType,
+                    HeaderNames.Authorization,
+                ])
+                .AllowAnyMethod()
+                .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+        });
+    }
     options.AddPolicy("TestingOnly", policy =>
     {
         policy.WithOrigins(builder.Configuration["Auth0:ClientOriginUrl"]!)
