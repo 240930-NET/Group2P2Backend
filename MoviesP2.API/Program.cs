@@ -105,7 +105,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
-    options.AddPolicy("TestingOnly", policy =>
+    options.AddPolicy("TestingOnly2", policy =>
     {
         policy.WithOrigins("*")
             .WithHeaders([
@@ -162,8 +162,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.MapGet("/", () => {
-    return Environment.GetEnvironmentVariable("Auth0:ClientOriginUrl");
-});
 
 app.Run();

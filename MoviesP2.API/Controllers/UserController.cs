@@ -19,7 +19,11 @@ public class UserController : Controller
         _userService = userService;
     }
 
-
+    [HttpGet]
+    [EnableCors("TestingOnly2")]
+    public IActionResult Testing() {
+        return Ok(Environment.GetEnvironmentVariable("Auth0:ClientOriginUrl"));
+    }
     //Used for testing to be removed in prod
     [HttpGet] 
     [EnableCors("TestingOnly")]
