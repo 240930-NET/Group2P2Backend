@@ -63,10 +63,10 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
-/*
+
 builder.Services.AddCors(options =>
 {
-    /*if(builder.Environment.IsDevelopment()) {
+    if(builder.Environment.IsDevelopment()) {
         options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
@@ -91,10 +91,10 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
-    //}
+    }
     options.AddPolicy("TestingOnly", policy =>
     {
-        policy.WithOrigins(builder.Configuration["Auth0:SwaggerOriginURL"]!)
+        policy.WithOrigins(builder.Configuration["Auth0:ClientOriginUrl"]!)
             .WithHeaders([
                 HeaderNames.ContentType,
                 HeaderNames.Authorization,
@@ -102,17 +102,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
-    options.AddPolicy("TestingOnly2", policy =>
-    {
-        policy.WithOrigins("*")
-            .WithHeaders([
-                HeaderNames.ContentType,
-                HeaderNames.Authorization,
-            ])
-            .AllowAnyMethod()
-            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
-    });
-});*/
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {   
@@ -153,7 +143,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-//app.UseCors();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
