@@ -64,7 +64,7 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
-
+/*
 builder.Services.AddCors(options =>
 {
     if(builder.Environment.IsDevelopment()) {
@@ -136,7 +136,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true 
     }; 
 });
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization();*/
 
 var app = builder.Build();
 
@@ -155,16 +155,16 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
-app.UseCors();
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseCors();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 
 app.MapGet("/", () => {
     return("hahahaha");
 });
 
-app.MapControllers();
+//app.MapControllers();
 
 
 
