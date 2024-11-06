@@ -20,13 +20,11 @@ public class UserController : Controller
     }
 
     [HttpGet("test")]
-    //[EnableCors("TestingOnly2")]
     public IActionResult Testing() {
         return Ok("It worked");
     }
     //Used for testing to be removed in prod
     [HttpGet] 
-    //[EnableCors("TestingOnly")]
     [Authorize]
     public async Task<IActionResult> GetAllUsers(){
         try{
@@ -87,7 +85,6 @@ public class UserController : Controller
     }
 
     [HttpDelete("deleteUser")]
-    [EnableCors("TestingOnly")]
     [Authorize]
     public async Task<IActionResult> DeleteUser() {
         try {
