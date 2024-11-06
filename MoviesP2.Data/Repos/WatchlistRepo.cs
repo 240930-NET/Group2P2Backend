@@ -20,13 +20,16 @@ public class WatchlistRepo : IWatchlistRepo{
     {
         return _context.Watchlists.Find(id);
     }
-    public Watchlist? GetWatchlistByUserAuthId(string authId) {
-        User? user = _context.Users
-                    .Include(u => u.Watchlist)
-                    .SingleOrDefault(u => u.AuthId == authId) 
-                    ?? throw new Exception("User doesn't exist");
-        return user.Watchlist;
-    }
+    
+    public async Task<Watchlist?> GetWatchListByUserAuthId(string authId)
+{
+    var user = await _context.Users
+        .Include(u => u.Watchlist)
+        .SingleOrDefaultAsync(u => u.AuthId == authId);
+    
+    return user?.Watchlist;
+}
+
     public void AddWatchlist(Watchlist watchlist)
     {
         _context.Watchlists.Add(watchlist);
@@ -73,4 +76,9 @@ public class WatchlistRepo : IWatchlistRepo{
                 throw new NullReferenceException();
             } 
         }
+
+    public Watchlist? GetWatchlistByUserAuthId(string authId)
+    {
+        throw new NotImplementedException();
+    }
 }

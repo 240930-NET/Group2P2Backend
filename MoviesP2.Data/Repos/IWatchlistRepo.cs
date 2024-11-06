@@ -18,4 +18,5 @@ public interface IWatchlistRepo {
     //I put it as movie for now but subject to change
     public void AddMovieToWatchlist(int id, Movie movie);
     public void RemoveMovieFromWatchlist(int id, Movie movie);
+    Task<Watchlist?> GetWatchListByUserAuthId(string authId);
 }

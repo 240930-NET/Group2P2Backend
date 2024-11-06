@@ -10,7 +10,27 @@ public class MovieService : IMovieService {
         _movieRepo = movieRepo;
     }
 
+    public void AddMovie(Movie movie)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteMovie(Movie movie)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void EditMovie(Movie movie)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Movie> GetAllMovies() {
         return _movieRepo.GetAllMovies();
+    }
+
+    public object? GetMovieById(int v)
+    {
+        throw new NotImplementedException();
     }
 }

@@ -10,11 +10,26 @@ public class WatchlistService : IWatchlistService {
         _watchlistRepo = watchlistRepo;
     }
 
+    public void AddMovieToWatchlist(string v, Movie movie)
+    {
+        throw new NotImplementedException();
+    }
+
     public List<Watchlist> GetAllWatchlists() {
         return _watchlistRepo.GetAllWatchlists();
     }
     //May need to be changed 
     public Watchlist GetWatchlistByUserAuthId(string authId) {
         return _watchlistRepo.GetWatchlistByUserAuthId(authId)!;
+    }
+
+    public IEnumerable<object> GetWatchListByUserAuthId(string v)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveMovieFromWatchlist(string v, Movie movie)
+    {
+        throw new NotImplementedException();
     }
 }
