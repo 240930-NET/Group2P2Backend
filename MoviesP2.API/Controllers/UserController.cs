@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Cors;
 
 using MoviesP2.API.Services;
 using MoviesP2.Models;
+using Microsoft.Net.Http.Headers;
 
 namespace MoviesP2.API.Controllers;
 
 [ApiController] // this Data Annonation is marking our class as a controller
-[Route("api/UserController")]
+[Route("api/[controller]")]
 public class UserController : Controller
 {
     
@@ -21,8 +22,9 @@ public class UserController : Controller
 
     [HttpGet("test")]
     public IActionResult Testing() {
+
         System.Diagnostics.Trace.TraceInformation("My message!");
-        return Ok("It worked");
+        return Ok(Request.Headers[HeaderNames.Authorization]);
     }
     //Used for testing to be removed in prod
     [HttpGet] 
