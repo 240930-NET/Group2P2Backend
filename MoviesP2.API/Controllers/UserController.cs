@@ -21,6 +21,7 @@ public class UserController : Controller
 
     [HttpGet("test")]
     public IActionResult Testing() {
+        System.Diagnostics.Trace.TraceInformation("My message!");
         return Ok("It worked");
     }
     //Used for testing to be removed in prod

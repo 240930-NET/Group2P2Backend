@@ -141,8 +141,8 @@ if (app.Environment.IsDevelopment())
       settings.OAuthUsePkce();
     });
 }
-
 app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseCors();
 app.UseAuthentication();
