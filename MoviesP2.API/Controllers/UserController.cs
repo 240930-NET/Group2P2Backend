@@ -78,10 +78,10 @@ public class UserController : Controller
 
     [HttpPost("addUser")]
     [Authorize]
-    public async Task<IActionResult> AddUser() {
+    public async Task<IActionResult> AddUser([FromBody] User user) {
         try {
-            User user = await _userService.AddUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return Ok(user);
+            User createdUser = await _userService.AddUser(user.AuthId);
+            return Ok(createdUser);
         }
         catch(Exception ex){
             if(ex is DuplicateNameException) {
