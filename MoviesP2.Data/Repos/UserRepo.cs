@@ -104,7 +104,7 @@ public class UserRepo : IUserRepo{
     }
     public async Task<User> RemoveMovieFromWatchedMovies(string authId, Movie movie)
     {
-        User? found = await GetUserByAuthId(authId);;
+        User? found = await GetUserByAuthId(authId);
         if (found != null)
         {
             Movie? foundMovie = await _context.Movies
@@ -151,9 +151,14 @@ public class UserRepo : IUserRepo{
     }
     public async Task<User> RemoveMovieFromWatchlist(string authId, Movie movie)
     {
-        User? found = await GetUserByAuthId(authId);
+        User? found = await _context.Users
+                    .Include(u => u.Watchlist)
+                      .ThenInclude(w => w.Movies)
+                    .Include(u => u.Movies)
+                    .SingleOrDefaultAsync(u => u.AuthId == authId);
+
         if (found != null)
-        {
+        {   
             if (found.Watchlist == null) throw new Exception("User watchlist is null");
             Movie? foundMovie = await _context.Movies
                 .SingleOrDefaultAsync(m => m.Title == movie.Title 

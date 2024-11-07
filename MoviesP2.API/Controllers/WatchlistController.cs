@@ -10,7 +10,7 @@ namespace MoviesP2.API.Controllers;
 
 [ApiController] // this Data Annonation is marking our class as a controller
 [EnableCors("TestingOnly")]
-[Route("api/WatchlistController")]
+[Route("api/[controller]")]
 public class WatchlistController : Controller
 {
     

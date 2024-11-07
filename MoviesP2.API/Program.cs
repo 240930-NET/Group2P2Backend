@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -65,15 +65,13 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IWatchlistService, WatchlistService>();
 builder.Services.AddScoped<IMovieService, MovieService>();
 
-
-
 builder.Services.AddCors(options =>
 {
-    /*if(builder.Environment.IsDevelopment()) {
+    if(builder.Environment.IsDevelopment()) {
         options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
-                builder.Configuration["Auth0:ClientOriginUrl"]!, builder.Configuration["Auth0:SwaggerOriginUrl"]!)
+                "http://localhost:3000", builder.Configuration["Auth0:SwaggerOriginUrl"]!)
                 .WithHeaders([
                     HeaderNames.ContentType,
                     HeaderNames.Authorization,
@@ -82,7 +80,7 @@ builder.Services.AddCors(options =>
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
     }
-    else {*/
+    else {
          options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
@@ -94,10 +92,10 @@ builder.Services.AddCors(options =>
                 .AllowAnyMethod()
                 .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
         });
-    //}
+    }
     options.AddPolicy("TestingOnly", policy =>
     {
-        policy.WithOrigins(builder.Configuration["Auth0:SwaggerOriginURL"]!)
+        policy.WithOrigins(builder.Configuration["Auth0:ClientOriginUrl"]!)
             .WithHeaders([
                 HeaderNames.ContentType,
                 HeaderNames.Authorization,
@@ -105,7 +103,7 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
-    options.AddPolicy("TestingOnly", policy =>
+    options.AddPolicy("TestingOnly2", policy =>
     {
         policy.WithOrigins("*")
             .WithHeaders([
@@ -138,6 +136,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true 
     }; 
 });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -153,17 +152,20 @@ if (app.Environment.IsDevelopment())
       settings.OAuthUsePkce();
     });
 }
-
 app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+/*
+app.MapGet("/", () => {
+    return("hahahaha");
+});
+*/
 app.MapControllers();
 
-app.MapGet("/", () => {
-    return builder.Configuration["Auth0:ClientOriginUrl"];
-});
+
 
 app.Run();

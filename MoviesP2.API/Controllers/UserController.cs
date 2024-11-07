@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Cors;
 
 using MoviesP2.API.Services;
 using MoviesP2.Models;
+using Microsoft.Net.Http.Headers;
+using System.Data;
 
 namespace MoviesP2.API.Controllers;
 
 [ApiController] // this Data Annonation is marking our class as a controller
-[Route("api/UserController")]
+[Route("api/[controller]")]
 public class UserController : Controller
 {
     
@@ -19,10 +21,14 @@ public class UserController : Controller
         _userService = userService;
     }
 
+    [HttpGet("test")]
+    public IActionResult Testing() {
 
+        System.Diagnostics.Trace.TraceInformation("My message!");
+        return Ok(Request.Headers[HeaderNames.Authorization]);
+    }
     //Used for testing to be removed in prod
     [HttpGet] 
-    [EnableCors("TestingOnly")]
     [Authorize]
     public async Task<IActionResult> GetAllUsers(){
         try{
@@ -71,19 +77,21 @@ public class UserController : Controller
     }
 
     [HttpPost("addUser")]
-    //[Authorize]
-    public async Task<IActionResult> AddUser() {
+    [Authorize]
+    public async Task<IActionResult> AddUser([FromBody] User user) {
         try {
-            User user = await _userService.AddUser(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return Ok(user);
+            User createdUser = await _userService.AddUser(user.AuthId);
+            return Ok(createdUser);
         }
         catch(Exception ex){
+            if(ex is DuplicateNameException) {
+                return Ok("Duplicate user");
+            }
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
 
     [HttpDelete("deleteUser")]
-    [EnableCors("TestingOnly")]
     [Authorize]
     public async Task<IActionResult> DeleteUser() {
         try {
@@ -107,7 +115,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("userRemoveWatchedMovie")]
+    [HttpDelete("userRemoveWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
         try {
@@ -131,7 +139,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpPatch("userRemoveWatchlistMovie")]
+    [HttpDelete("userRemoveWatchlistMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveMovieFromWatchlist([FromBody] Movie movie) {
         try {
@@ -142,8 +150,8 @@ public class UserController : Controller
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
-
-    [HttpGet("checkMovieInWatchedMovie")]
+    
+    [HttpPost("checkMovieInWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchedMovie([FromBody] Movie movie) {
         try {
@@ -154,7 +162,7 @@ public class UserController : Controller
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
-
+    
     [HttpGet("checkMovieInWatchlist")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchlist([FromBody] Movie movie) {

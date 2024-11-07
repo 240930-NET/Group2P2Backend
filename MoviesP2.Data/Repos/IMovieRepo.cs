@@ -19,6 +19,6 @@ public interface IMovieRepo{
     //We either handle checking if movie in service/throw an error if it doesn't/make it nullable and return null if not exist
     public void EditMovie(Movie movie);
     //Return Movie deleted or null if nothing deleted/Could return a boolean instead not sure
-    public void DeleteCustomer(Movie movie);
+    public void DeleteMovie(Movie movie);
 
 }
