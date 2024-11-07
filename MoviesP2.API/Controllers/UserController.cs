@@ -106,7 +106,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpDelete("userRemoveWatchedMovie")]
+    [HttpPatch("userRemoveWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
         try {
@@ -130,7 +130,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpDelete("userRemoveWatchlistMovie")]
+    [HttpPatch("userRemoveWatchlistMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveMovieFromWatchlist([FromBody] Movie movie) {
         try {
@@ -142,7 +142,7 @@ public class UserController : Controller
         }
     }
     
-    [HttpPost("checkMovieInWatchedMovie")]
+    [HttpGet("checkMovieInWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchedMovie([FromBody] Movie movie) {
         try {
