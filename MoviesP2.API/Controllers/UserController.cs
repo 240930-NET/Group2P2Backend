@@ -21,12 +21,6 @@ public class UserController : Controller
         _userService = userService;
     }
 
-    [HttpGet("test")]
-    public IActionResult Testing() {
-
-        System.Diagnostics.Trace.TraceInformation("My message!");
-        return Ok(Request.Headers[HeaderNames.Authorization]);
-    }
     //Used for testing to be removed in prod
     [HttpGet] 
     [Authorize]
