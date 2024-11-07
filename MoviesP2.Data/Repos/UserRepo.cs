@@ -107,8 +107,17 @@ public class UserRepo : IUserRepo{
         User? found = await GetUserByAuthId(authId);;
         if (found != null)
         {
-            found.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            Movie? foundMovie = await _context.Movies
+                .SingleOrDefaultAsync(m => m.Title == movie.Title 
+                                        && m.ReleaseYear == movie.ReleaseYear);
+            if (foundMovie != null) {
+                found.Movies.Remove(movie);
+                await _context.SaveChangesAsync();
+            }
+            else {
+                throw new Exception("Movie doesn't exist");
+            }
+            
             return found;
         }
         else{
@@ -146,8 +155,16 @@ public class UserRepo : IUserRepo{
         if (found != null)
         {
             if (found.Watchlist == null) throw new Exception("User watchlist is null");
-            found.Watchlist.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            Movie? foundMovie = await _context.Movies
+                .SingleOrDefaultAsync(m => m.Title == movie.Title 
+                                        && m.ReleaseYear == movie.ReleaseYear);
+            if (foundMovie != null) {
+                found.Watchlist.Movies.Remove(movie);
+                await _context.SaveChangesAsync();
+            }
+            else {
+                throw new Exception("Movie doesn't exist");
+            }
             return found;
         }
         else{
