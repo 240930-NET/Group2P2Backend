@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using MoviesP2.API.Services;
 using MoviesP2.Models;
 using Microsoft.Net.Http.Headers;
+using System.Data;
 
 namespace MoviesP2.API.Controllers;
 
@@ -83,6 +84,9 @@ public class UserController : Controller
             return Ok(user);
         }
         catch(Exception ex){
+            if(ex is DuplicateNameException) {
+                return Ok("Duplicate user");
+            }
             return StatusCode(500, ex.Message); // return server error with the error message
         }
     }
