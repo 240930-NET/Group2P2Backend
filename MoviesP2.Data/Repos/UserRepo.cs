@@ -19,6 +19,7 @@ public class UserRepo : IUserRepo{
     {
         return await _context.Users
                     .Include(u => u.Watchlist)
+                        .ThenInclude(w => w!.Movies)
                     .Include(u => u.Movies)
                     .ToListAsync();
     }
@@ -26,12 +27,14 @@ public class UserRepo : IUserRepo{
     {
         return await _context.Users
                     .Include(u => u.Watchlist)
+                        .ThenInclude(w => w!.Movies)
                     .Include(u => u.Movies)
                     .SingleOrDefaultAsync(u => u.UserId == id);
     }
     public async Task<User?> GetUserByAuthId(string authId) {
         return await _context.Users
                     .Include(u => u.Watchlist)
+                        .ThenInclude(w => w!.Movies)
                     .Include(u => u.Movies)
                     .SingleOrDefaultAsync(u => u.AuthId == authId);
     }
@@ -153,7 +156,7 @@ public class UserRepo : IUserRepo{
     {
         User? found = await _context.Users
                     .Include(u => u.Watchlist)
-                      .ThenInclude(w => w.Movies)
+                        .ThenInclude(w => w!.Movies)
                     .Include(u => u.Movies)
                     .SingleOrDefaultAsync(u => u.AuthId == authId);
 
