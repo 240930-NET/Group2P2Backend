@@ -9,7 +9,7 @@ namespace MoviesP2.API.Controllers;
 
 [ApiController]
 [EnableCors("TestingOnly")]
-[Route("api/[Controller]")]
+[Route("api/[controller]")]
 public class MovieController : Controller{
     
     private readonly IMovieService _movieService;

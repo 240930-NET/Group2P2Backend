@@ -1,3 +1,4 @@
+using System.Data;
 using MoviesP2.Data.Repos;
 using MoviesP2.Models;
 
@@ -43,7 +44,7 @@ public class UserService : IUserService {
     public async Task<User> AddUser(string? authId) {
         if (authId == null) throw new Exception("No user info provided");
         User? user = await _userRepo.GetUserByAuthId(authId);
-        if (user != null) throw new Exception("User already exists");
+        if (user != null) throw new DuplicateNameException("User already exists");
         User userToAdd = new User {AuthId = authId, 
                                     Watchlist = new Watchlist()
                                 };

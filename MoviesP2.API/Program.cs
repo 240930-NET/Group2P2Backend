@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
@@ -70,7 +71,7 @@ builder.Services.AddCors(options =>
         options.AddDefaultPolicy(policy =>
         {
             policy.WithOrigins(
-                builder.Configuration["Auth0:ClientOriginUrl"]!, builder.Configuration["Auth0:SwaggerOriginUrl"]!)
+                "http://localhost:3000", builder.Configuration["Auth0:SwaggerOriginUrl"]!)
                 .WithHeaders([
                     HeaderNames.ContentType,
                     HeaderNames.Authorization,
@@ -102,6 +103,16 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
     });
+    options.AddPolicy("TestingOnly2", policy =>
+    {
+        policy.WithOrigins("*")
+            .WithHeaders([
+                HeaderNames.ContentType,
+                HeaderNames.Authorization,
+            ])
+            .AllowAnyMethod()
+            .SetPreflightMaxAge(TimeSpan.FromSeconds(86400));
+    });
 });
 
 builder.Services.AddControllers().AddJsonOptions(options =>
@@ -125,6 +136,7 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true 
     }; 
 });
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -140,13 +152,20 @@ if (app.Environment.IsDevelopment())
       settings.OAuthUsePkce();
     });
 }
-
 app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
+/*
+app.MapGet("/", () => {
+    return("hahahaha");
+});
+*/
 app.MapControllers();
+
+
 
 app.Run();
