@@ -58,7 +58,7 @@ namespace MoviesP2.Tests.Services
         public void GetMovieById_ShouldReturnNull_WhenMovieDoesNotExist()
         {
             // Arrange
-            _mockMovieRepo.Setup(repo => repo.GetMovieById(1)).Returns((Movie)null);
+            _mockMovieRepo.Setup(repo => repo.GetMovieById(1)).Returns((Movie)null!);
 
             // Act
             var result = _movieService.GetMovieById(1);
@@ -85,7 +85,7 @@ namespace MoviesP2.Tests.Services
             var result = _movieService.GetMovieByTitle(searchMovie.Title);
 
             // Assert
-            Assert.Equal(result.Title, searchMovie.Title);
+            Assert.Equal(result!.Title, searchMovie.Title);
             _mockMovieRepo.Verify(repo => repo.GetMovieByTitle(It.IsAny<string>()), Times.Once);
         }
 
@@ -119,16 +119,11 @@ namespace MoviesP2.Tests.Services
             _mockMovieRepo.Setup(repo => repo.GetMovieById(It.IsAny<int>()))
                   .Returns((int id) => mockMovies.FirstOrDefault(i => i.MovieId == id));
 
-            // Moc Repo : CheckExistMovie
-            _mockMovieRepo.Setup(repo => repo.CheckMovieExist(It.IsAny<Movie>()))
-                  .Returns((Movie movie) => mockMovies
-                  .Any(i => i.ReleaseYear == movie.ReleaseYear && Equals(i.Title, movie.Title)));
-
             // Act
             var result = _movieService.EditMovie(newMovie);
 
             // Assert
-            Assert.Contains(mockMovies, i => i.PosterLink.Equals("9.9.9.9"));
+            Assert.Contains(mockMovies, i => i.PosterLink!.Equals("9.9.9.9"));
             _mockMovieRepo.Verify(repo => repo.GetMovieById(newMovie.MovieId), Times.Once);
             _mockMovieRepo.Verify(repo => repo.EditMovie(It.IsAny<Movie>()), Times.Once);
         }
@@ -148,12 +143,6 @@ namespace MoviesP2.Tests.Services
             _mockMovieRepo.Setup(repo => repo.GetMovieById(It.IsAny<int>()))
                   .Returns((int id) => mockMovies.FirstOrDefault(i => i.MovieId == id));
 
-            // Moc Repo : CheckExistMovie
-            _mockMovieRepo.Setup(repo => repo.CheckMovieExist(It.IsAny<Movie>()))
-                  .Returns((Movie movie) => mockMovies
-                  .Any(i => i.ReleaseYear == movie.ReleaseYear && Equals(i.Title.ToLower(), movie.Title.ToLower())));
-
-
             // Moc Repo : Delete                    
             _mockMovieRepo.Setup(repo => repo.DeleteMovie(It.IsAny<Movie>()))
                 .Callback<Movie>(movie => 
@@ -165,7 +154,7 @@ namespace MoviesP2.Tests.Services
                 });
 
             // Act
-            _movieService.DeleteMovie(deleteMovie);
+            _movieService.DeleteMovie(deleteMovie.MovieId);
 
             // Assert
             Assert.DoesNotContain(mockMovies, m => Equals(m.Title, deleteMovie.Title) && m.ReleaseYear == deleteMovie.ReleaseYear);

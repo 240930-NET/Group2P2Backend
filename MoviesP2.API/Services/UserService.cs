@@ -24,10 +24,10 @@ public class UserService : IUserService {
         }
         throw new Exception("No user info provided");
     }
-    public async Task<Watchlist> GetUserWatchlist(string? authId) {
+    public async Task<List<Movie>> GetUserWatchlist(string? authId) {
         if(authId != null) {
-            Watchlist? watchlist = await _userRepo.GetUserWatchlist(authId);
-            if (watchlist != null) return watchlist;
+            List<Movie> watchlistMovies = await _userRepo.GetUserWatchlist(authId);
+            if (watchlistMovies != null) return watchlistMovies;
             throw new Exception("User does not exist");
         }
         throw new Exception("No user info provided");

@@ -62,18 +62,30 @@ namespace MoviesP2.Tests.Services
             {
                 new User { UserId = 1, AuthId = "auth1", Watchlist = new Watchlist { WatchlistId = 1, UserId = 1 }},
                 new User { UserId = 2, AuthId = "auth2", Watchlist = new Watchlist { WatchlistId = 2, UserId = 2 }},
-                new User { UserId = 3, AuthId = "auth3", Watchlist = new Watchlist { WatchlistId = 4, UserId = 3 }}
+                new User { UserId = 3, AuthId = "auth3", Watchlist = new Watchlist { WatchlistId = 4, UserId = 3, }}
             };
+
+            var mockWatchlist = new List<Watchlist>
+            {
+                new Watchlist { WatchlistId = 1, UserId = 1, Movies={new Movie{MovieId=1, Title="Action Movie"}, new Movie{MovieId=2, Title="Comic Movie"}}},
+                new Watchlist { WatchlistId = 2, UserId = 2, Movies={}},
+                new Watchlist { WatchlistId = 4, UserId = 3, Movies={new Movie{MovieId=2, Title="Comic Movie"}}},
+            };
+
+            List<Movie> expected = [new Movie{MovieId=2, Title="Comic Movie"}];
 
             // Repo : GetUserWatchlist
             _mockUserRepo.Setup(repo => repo.GetUserWatchlist(It.IsAny<string>()))
-                   .ReturnsAsync((string authId) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Watchlist);
+                   .ReturnsAsync((string authId) => mockWatchlist
+                        .FirstOrDefault(w => Equals(w.UserId, 
+                            mockUsers.FirstOrDefault(u => Equals(u.AuthId, authId))!.UserId))!.Movies);
+                    
             
             // Act
-            Watchlist result = await _userService.GetUserWatchlist("auth3");
+            List<Movie> result = await _userService.GetUserWatchlist("auth3");
 
             // Assert
-            Assert.Equal(4, result.WatchlistId);
+            Assert.Equal(expected[0].Title, result[0].Title);
             _mockUserRepo.Verify(repo => repo.GetUserWatchlist(It.IsAny<string>()), Times.Once);
         }
 
@@ -90,7 +102,7 @@ namespace MoviesP2.Tests.Services
 
             // Repo : GetUserWatchlist
             _mockUserRepo.Setup(repo => repo.GetUserWatchedMovies(It.IsAny<string>()))
-                   .ReturnsAsync((string authId) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Movies);
+                   .ReturnsAsync((string authId) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId))!.Movies);
             
             // Act
             List<Movie> result = await _userService.GetUserWatchedMovies("auth3");
@@ -174,13 +186,13 @@ namespace MoviesP2.Tests.Services
 
             // Repo : AddMovieToWatchedMovies
             _mockUserRepo.Setup(repo => repo.AddMovieToWatchedMovies(It.IsAny<string>(), It.IsAny<Movie>()))
-                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Movies.Add(movie));
+                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId))!.Movies.Add(movie));
             
             // Act
             _ = await _userService.AddWatchedMovie("auth3", newMovie);
             var user = mockUsers.FirstOrDefault(u => u.AuthId.Equals("auth3"));
             // Assert
-            Assert.Contains(user.Movies, m => m.Title.Equals(newMovie.Title));
+            Assert.Contains(user!.Movies, m => m.Title.Equals(newMovie.Title));
             _mockUserRepo.Verify(repo => repo.AddMovieToWatchedMovies(It.IsAny<string>(), It.IsAny<Movie>()), Times.Once);
         }
 
@@ -199,14 +211,14 @@ namespace MoviesP2.Tests.Services
 
             // Repo : RemoveWatchedMovie
             _mockUserRepo.Setup(repo => repo.RemoveMovieFromWatchedMovies(It.IsAny<string>(), It.IsAny<Movie>()))
-                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Movies.RemoveAll(m => m.MovieId == movie.MovieId));
+                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId))!.Movies.RemoveAll(m => m.MovieId == movie.MovieId));
             
             // Act
             _ = await _userService.RemoveWatchedMovie("auth1", targetMovie);
             var user = mockUsers.FirstOrDefault(u => u.AuthId.Equals("auth1"));
             // Assert
-            Assert.DoesNotContain(user.Movies, m => m.Title.Equals(targetMovie.Title));
-            Assert.Equal(1, user.Movies.Count);
+            Assert.DoesNotContain(user!.Movies, m => m.Title.Equals(targetMovie.Title));
+            Assert.Single(user.Movies);
             _mockUserRepo.Verify(repo => repo.RemoveMovieFromWatchedMovies(It.IsAny<string>(), It.IsAny<Movie>()), Times.Once);
         }
          
@@ -233,13 +245,13 @@ namespace MoviesP2.Tests.Services
 
             // Repo : AddMovieToWatchlist
             _mockUserRepo.Setup(repo => repo.AddMovieToWatchlist(It.IsAny<string>(), It.IsAny<Movie>()))
-                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Watchlist.Movies.Add(movie));
+                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId))!.Watchlist!.Movies.Add(movie));
             
             // Act
             _ = await _userService.AddMovieToWatchlist("auth2", newMovie);
             var user = mockUsers.FirstOrDefault(u => u.AuthId.Equals("auth2"));
             // Assert
-            Assert.Contains(user.Watchlist.Movies, m => m.Title.Equals(newMovie.Title));
+            Assert.Contains(user!.Watchlist!.Movies, m => m.Title.Equals(newMovie.Title));
             _mockUserRepo.Verify(repo => repo.AddMovieToWatchlist(It.IsAny<string>(), It.IsAny<Movie>()), Times.Once);
         }
 
@@ -265,14 +277,14 @@ namespace MoviesP2.Tests.Services
 
             // Repo : RemoveMovieFromWatchlist
             _mockUserRepo.Setup(repo => repo.RemoveMovieFromWatchlist(It.IsAny<string>(), It.IsAny<Movie>()))
-                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId)).Watchlist
+                   .Callback((string authId, Movie movie) => mockUsers.FirstOrDefault(m => Equals(m.AuthId, authId))!.Watchlist!
                    .Movies.RemoveAll(m=> m.MovieId == movie.MovieId));
             
             // Act
             _ = await _userService.RemoveMovieFromWatchlist("auth3", targeMovie);
             var user = mockUsers.FirstOrDefault(u => u.AuthId.Equals("auth3"));
             // Assert
-            Assert.DoesNotContain(user.Watchlist.Movies, m => m.Title.Equals(targeMovie.Title));
+            Assert.DoesNotContain(user!.Watchlist!.Movies, m => m.Title.Equals(targeMovie.Title));
             _mockUserRepo.Verify(repo => repo.RemoveMovieFromWatchlist(It.IsAny<string>(), It.IsAny<Movie>()), Times.Once);
         }         
     }

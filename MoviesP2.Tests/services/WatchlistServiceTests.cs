@@ -50,7 +50,7 @@ namespace MoviesP2.Tests.Services
             };
 
             _mockWatchlistRepo.Setup(repo => repo.GetWatchlistByUserAuthId(It.IsAny<string>()))
-                    .Returns((string AuthId) => mockUsers.FirstOrDefault(u => u.AuthId.Equals(AuthId)).Watchlist);
+                    .Returns((string AuthId) => mockUsers.FirstOrDefault(u => u.AuthId.Equals(AuthId))!.Watchlist);
 
             // Act
             var targetUser = new User { UserId = 3, AuthId = "auth3", Watchlist = new Watchlist { WatchlistId = 5, UserId = 3 }};
