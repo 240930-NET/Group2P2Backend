@@ -161,8 +161,8 @@ public class UserController : Controller
     public async Task<IActionResult> CheckMovieInWatchlist(string title, int releaseYear) {
         Movie movie = new() { Title = title, ReleaseYear = releaseYear};
         try {
-            User user = await _userService.RemoveMovieFromWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
-            return Ok(user);
+            bool result = await _userService.CheckMovieInWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
+            return Ok(result);
         }
         catch(Exception ex){
             return StatusCode(500, ex.Message); // return server error with the error message
