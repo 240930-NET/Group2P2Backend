@@ -115,7 +115,7 @@ public class UserRepo : IUserRepo{
                 .SingleOrDefaultAsync(m => m.Title == movie.Title 
                                         && m.ReleaseYear == movie.ReleaseYear);
             if (foundMovie != null) {
-                found.Movies.Remove(movie);
+                found.Movies.Remove(foundMovie);
                 await _context.SaveChangesAsync();
             }
             else {
@@ -168,7 +168,7 @@ public class UserRepo : IUserRepo{
                 .SingleOrDefaultAsync(m => m.Title == movie.Title 
                                         && m.ReleaseYear == movie.ReleaseYear);
             if (foundMovie != null) {
-                found.Watchlist.Movies.Remove(movie);
+                found.Watchlist.Movies.Remove(foundMovie);
                 await _context.SaveChangesAsync();
             }
             else {
