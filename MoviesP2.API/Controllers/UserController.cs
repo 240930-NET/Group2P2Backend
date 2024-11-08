@@ -143,10 +143,10 @@ public class UserController : Controller
         }
     }
     
-    [HttpGet("checkMovieInWatchedMovie/{title}/{releaseYear}/{posterLink}")]
+    [HttpGet("checkMovieInWatchedMovie/{title}/{releaseYear}")]
     [Authorize]
-    public async Task<IActionResult> CheckMovieInWatchedMovie(string title, int releaseYear, string posterLink) {
-        Movie movie = new() { Title = title, ReleaseYear = releaseYear, PosterLink=posterLink};
+    public async Task<IActionResult> CheckMovieInWatchedMovie(string title, int releaseYear) {
+        Movie movie = new() { Title = title, ReleaseYear = releaseYear};
         try {
             bool result = await _userService.CheckMovieInWatchedMovies(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
             return Ok(result);
@@ -156,10 +156,10 @@ public class UserController : Controller
         }
     }
     
-    [HttpGet("checkMovieInWatchlist/{title}/{releaseYear}/{posterLink}")]
+    [HttpGet("checkMovieInWatchlist/{title}/{releaseYear}")]
     [Authorize]
-    public async Task<IActionResult> CheckMovieInWatchlist(string title, int releaseYear, string posterLink) {
-        Movie movie = new() { Title = title, ReleaseYear = releaseYear, PosterLink=posterLink};
+    public async Task<IActionResult> CheckMovieInWatchlist(string title, int releaseYear) {
+        Movie movie = new() { Title = title, ReleaseYear = releaseYear};
         try {
             User user = await _userService.RemoveMovieFromWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, movie);
             return Ok(user);
