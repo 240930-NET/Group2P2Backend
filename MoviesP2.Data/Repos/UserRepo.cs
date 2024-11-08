@@ -57,12 +57,13 @@ public class UserRepo : IUserRepo{
         return false;
     }
     //Returns the user watchlist
-    public async Task<Watchlist?> GetUserWatchlist(string authId)
+    public async Task<List<Movie>> GetUserWatchlist(string authId)
     {
         User ?found = await GetUserByAuthId(authId);
         if (found != null)
         {
-            return found.Watchlist;
+            if( found.Watchlist == null) throw new NullReferenceException();
+            return found.Watchlist.Movies;
         }
         else{
             throw new NullReferenceException();

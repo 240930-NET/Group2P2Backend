@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Cors;
 
 using MoviesP2.API.Services;
 using MoviesP2.Models;
-using Microsoft.Net.Http.Headers;
 using System.Data;
 
 namespace MoviesP2.API.Controllers;
@@ -50,8 +48,8 @@ public class UserController : Controller
     [Authorize]
     public async Task<IActionResult> GetUserWatchlist() {
         try {
-            Watchlist watchlist = await _userService.GetUserWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-            return Ok(watchlist);
+            List<Movie> watchlistMovies = await _userService.GetUserWatchlist(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            return Ok(watchlistMovies);
         }
         catch(Exception ex){
             return StatusCode(500, ex.Message); // return server error with the error message
@@ -109,7 +107,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpDelete("userRemoveWatchedMovie")]
+    [HttpPatch("userRemoveWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveWatchedMovie([FromBody] Movie movie) {
         try {
@@ -133,7 +131,7 @@ public class UserController : Controller
         }
     }
 
-    [HttpDelete("userRemoveWatchlistMovie")]
+    [HttpPatch("userRemoveWatchlistMovie")]
     [Authorize]
     public async Task<IActionResult> RemoveMovieFromWatchlist([FromBody] Movie movie) {
         try {
@@ -145,7 +143,7 @@ public class UserController : Controller
         }
     }
     
-    [HttpPost("checkMovieInWatchedMovie")]
+    [HttpGet("checkMovieInWatchedMovie")]
     [Authorize]
     public async Task<IActionResult> CheckMovieInWatchedMovie([FromBody] Movie movie) {
         try {

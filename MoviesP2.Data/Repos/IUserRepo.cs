@@ -17,7 +17,7 @@ public interface IUserRepo{
     //Returns true if the username is not taken, false if it is
     public Task<bool> CheckAuthIdNotTaken(User user);
     //Returns the user watchlist
-    public Task<Watchlist?> GetUserWatchlist(string authId);
+    public Task<List<Movie>> GetUserWatchlist(string authId);
     //This will return an empty list if user has not watched any movies
     public Task<List<Movie>> GetUserWatchedMovies(string authId);
     //Not sure if these two below should just return the whole updated User or the updated movie
